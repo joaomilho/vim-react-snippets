@@ -6,247 +6,200 @@ def lowerdash(t):
 	return '-'.join([ w.lower() for w in re.findall('[a-z]+|[A-Z]+[a-z]*', t) ])
 endglobal
 
-# Normal javascript snippets
-#
-snippet imp "Import a lib" b
-import $1 from '$2`!p snip.rv=lowerdash(t[1])`';
+# Require
+
+snippet req "Require const" b
+const $1 = require('`!p snip.rv=lowerdash(t[1])`')
 endsnippet
 
-snippet impf "Import a file" b
-import $1 from '${2:./}${3:$1}';
+# Imports
+
+snippet imp.lib "Import lib module" b
+import $1 from '$2`!p snip.rv=lowerdash(t[1])`'
 endsnippet
 
-snippet impn "Import nested" b
-import { $1 } from '$2';
+snippet imp.local "Import local module" b
+import $1 from '${2:./}${3:$1}'
 endsnippet
 
-snippet impp "Import without from" b
-import '$1';
+snippet imp.vars "Import variables from  lib" b
+import { $1 } from '$2'
 endsnippet
 
-snippet imps "Import pluralized" b
-import $1 from '${2:.}/$1s';
+snippet imp.no-from "Import without from" b
+import '$1'
 endsnippet
 
-snippet rc "Require const" b
-const $1 = require('`!p snip.rv=lowerdash(t[1])`');
+snippet imp.classnames "Import classnames" b
+import classnames from 'classnames'
 endsnippet
 
-snippet imm "Import immutable List and Map" b
-import { List, Map } from 'immutable';
+snippet imp.classnames.bind "Import bound classnames" b
+import bind from 'classnames/bind'
 endsnippet
 
-
-snippet icn "Import classnames" b
-import classnames from 'classnames';
+snippet imp.ramda "Import Ramda" b
+import '$1' from 'ramda/src/$2'
 endsnippet
+
+# Exports
+
+snippet exp "Export from location" b
+export $1 from '${2:./}$1'
+endsnippet
+
+snippet exp.vars "Export nested" b
+export { $1 } from '${2:./}'
+endsnippet
+
+snippet exp.function "Export function" b
+export ${1:default }function($2) {
+	$3
+}
+endsnippet
+
+snippet exp.function.simple "Export simple function" b
+export ${1:default } ($2) => (
+	$3
+)
+endsnippet
+
+# Iters
 
 snippet "\.(map|filter|forEach|reduce)" "Map with an arrow function" r
 .`!p snip.rv = match.group(1)`($1 => {
-	return $2;
-});
+	return $2
+})
 endsnippet
 
 snippet "\.(map|filter|forEach|reduce)=" "Map with an arrow function inline" r
 .`!p snip.rv = match.group(1)`($1 => $2)
 endsnippet
 
+# Console
+
 snippet cl "Console.log" b
-console.log($1);
+console.log($1)
 endsnippet
 
 snippet clv "Console log variable" b
-console.log('$1:', $1);
-endsnippet
-
-snippet exp "Export from location" b
-export $1 from '${2:./}$1';
-endsnippet
-
-snippet expn "Export nested" b
-export { $1 } from '${2:./}';
-endsnippet
-
-snippet expi "Export from a file import" b
-import $1 from '${2:./}${3:$1}';
-export ${4:default} $1;
-endsnippet
-
-snippet expix "Export from a jsx file import" b
-import $1 from '${2:./}${3:$1}.jsx';
-export ${4:default} $1;
-endsnippet
-
-snippet expf "Export function" b
-export ${1:default }function($2) {
-	$3
-}
+console.log('$1:', $1)
 endsnippet
 
 # ==========================================
 # React Snippets
 #
-snippet rce "React class exported" b
-import React, { Component, PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+snippet rea.class "React class exported" b
+import React, { Component, PropTypes } from 'react'
 
 export default class ${1:`!v expand('%:t:r')`} extends Component {
 	constructor(props) {
-		super(props);
+		super(props)
 
-		this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+		this.state = {
+
+		}
 	}
-
-	static propTypes = {
-		className: PropTypes.string,
-		children: PropTypes.node,
-	};
 
 	render() {
 		return (
 			${2:<div />}
-		);
+		)
 	}
+}
+
+`!v expand('%:t:r')`.propTypes = {
+	className: PropTypes.string,
+	children: PropTypes.node,
 }
 endsnippet
 
-snippet r.cce "React.createClass export" b
-import React, { PropTypes } from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
-
-const ${1:`!v expand('%:t:r')`} = React.createClass({
-	mixins: [PureRenderMixin],
-
-	render() {
-		return (
-			${2:<div />}
-		);
-	}
-});
-
-$1.propTypes = {
-	className: PropTypes.string,
-};
-
-export default $1;
-endsnippet
-
-
-snippet rfe "React function exported" b
-import React from 'react';
+snippet rea.function "React function exported" b
+import React from 'react'
 
 export default function `!v expand('%:t:r')`($2) {
 	return (
 		${3:<div>
 		</div>}
-	);
+	)
 }
 endsnippet
 
-snippet rpe "React pure export" b
-import React, { PropTypes } from 'react';
+snippet rea.function.simple "React pure export" b
+import React, { PropTypes } from 'react'
 
-const `!v expand('%:t:r')` = (${1:props}) => {
-	return (
-		<div${2}>
-		</div>
-	);
-};
+const `!v expand('%:t:r')` = (${1:props}) => (
+	<div${2}>
+	</div>
+)
 
 `!v expand('%:t:r')`.propTypes = {
 	${3}
-};
+}
 
-export default `!v expand('%:t:r')`;
+export default `!v expand('%:t:r')`
 endsnippet
 
-snippet icss "Import css transition group" b
-import CSSTransitionGroup from 'react-addons-css-transition-group';
-endsnippet
-
-snippet iadd "Import react addon" b
-import $1 from 'react-addons-`!p snip.rv=lowerdash(t[1])`';
-endsnippet
-
-snippet rcf "React class function" b
+snippet rea.namespaced-function "React class function" b
 $1 = (${2:e}) => {
 	$3
 };
 endsnippet
 
 
-snippet reactf "React file with a render" b
-import React from 'react';
-import ReactDOM from 'react-dom';
+snippet rea.render "React file with a render" b
+import React from 'react'
+import { render } from 'react-dom'
 
-import $1 from '${2:./}$1';
+import $1 from '${2:./}$1'
 
-ReactDOM.render(<$1 />, document.getElementById('${3:app}'));
+render(<$1 />, document.getElementById('${3:app}'))
 endsnippet
 
-# ==========================================
-# Component Specs and Lifecycle Section
-#
-snippet dp "get default props" b
-static defaultProps = {
-	$1
-};
-endsnippet
-
-
-snippet pt "React prop types definition" b
-static propTypes = {
-	${1:className}: ${2:PropTypes.string},${0}
-};
-endsnippet
-
-
-snippet cwm "component will mount" b
+# Lifecycle functions
+snippet lif.cwm "component will mount" b
 componentWillMount() {
 	$1
 }
 endsnippet
 
-snippet cdm "component did mount" b
+snippet lif.cdm "component did mount" b
 componentDidMount() {
 	$1
 }
 endsnippet
 
-snippet cwrp "component will receive props" b
+snippet lif.cwrp "component will receive props" b
 componentWillReceiveProps(nextProps) {
 	$1
 }
 endsnippet
 
-snippet scu "should component update" b
+snippet lif.scu "should component update" b
 shouldComponentUpdate(nextProps, nextState) {
 	return $1;
 }
 endsnippet
 
-snippet cwu "component will update" b
+snippet lif.cwu "component will update" b
 componentWillUpdate(nextProps, nextState) {
 	$3
 }
 endsnippet
 
-snippet cdu "component did update" b
+snippet lif.cdu "component did update" b
 componentDidUpdate(prevProps, prevState) {
 	$1
 }
 endsnippet
 
-snippet cwum "component will unmount" b
+snippet lif.cwum "component will unmount" b
 componentWillUnmount() {
 	$1
 }
 endsnippet
 
-
-# ==========================================
 # Prop Types Section
-#
 
 # Inline prop types
 snippet pt.a "React PropTypes array" w
